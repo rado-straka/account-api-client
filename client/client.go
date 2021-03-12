@@ -12,7 +12,8 @@ import (
 // Client is an entrypoint for the use of its operations
 type Client struct {
 	// Represents base url for the endpoints
-	URL string
+	URL    string
+	Client http.Client
 }
 
 var accountsEndpoint = "/v1/organisation/accounts"
@@ -32,7 +33,7 @@ func (c *Client) Create(account Account) (*Account, error) {
 	req.Header.Add("Content-Type", "application/vnd.api+json")
 
 	// execute request and read body
-	res, resBody, err := execRequest(req)
+	res, resBody, err := c.execRequest(req)
 	if err != nil {
 		return nil, err
 	}
@@ -54,9 +55,8 @@ func (c *Client) Create(account Account) (*Account, error) {
 }
 
 // Executes request then reads response body
-func execRequest(req *http.Request) (*http.Response, *[]byte, error) {
-	client := http.Client{}
-	res, err := client.Do(req)
+func (c *Client) execRequest(req *http.Request) (*http.Response, *[]byte, error) {
+	res, err := c.Client.Do(req)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -110,7 +110,7 @@ func (c *Client) Fetch(accountID string) (*Account, error) {
 	}
 
 	// execute request and read body
-	res, resBody, err := execRequest(req)
+	res, resBody, err := c.execRequest(req)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +141,7 @@ func (c *Client) Delete(accountID string, accountVersion int) error {
 	}
 
 	// execute request and read body
-	res, resBody, err := execRequest(req)
+	res, resBody, err := c.execRequest(req)
 	if err != nil {
 		return err
 	}

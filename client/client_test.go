@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var client = Client{"http://localhost:8080"}
+var client = Client{URL: "http://localhost:8080"}
 
 func buildAccount() Account {
 	return Account{
@@ -178,7 +178,7 @@ func TestDeleteWitWrongAccountVersion(t *testing.T) {
 }
 
 func TestWrongBaseURL(t *testing.T) {
-	resAccount, err := (&Client{"http://localhost:2468"}).Create(buildAccount())
+	resAccount, err := (&Client{URL: "http://localhost:2468"}).Create(buildAccount())
 	assert.Nil(t, resAccount)
 	assert.Equal(t,
 		`Post "http://localhost:2468/v1/organisation/accounts": dial tcp [::1]:2468: connect: connection refused`,
